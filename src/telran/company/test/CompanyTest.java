@@ -117,12 +117,42 @@ class CompanyTest {
 
 	@Test
 	void testGetAllEmployees() {
-		//TODO HW #22
+		Employee [] expected1 = {empl1, empl2, empl3, empl4, empl5};
+		List<Employee> list1 = company.getAllEmployees();
+		Employee [] actual1 = list1.toArray(new Employee[] {});
+		Arrays.sort(actual1);
+		assertArrayEquals(expected1, actual1);
+		
+		company.fireEmployee(ID1);
+		company.fireEmployee(ID5);
+		Employee [] expected2 = {empl2, empl3, empl4};
+		List<Employee> list2 = company.getAllEmployees();
+		Employee [] actual2 = list2.toArray(new Employee[] {});
+		Arrays.sort(actual2);
+		assertArrayEquals(expected2, actual2);
+		
+		company.fireEmployee(ID2);
+		company.fireEmployee(ID3);
+		company.fireEmployee(ID4);
+		List<Employee> list3 = company.getAllEmployees();
+		assertTrue(list3.isEmpty());
 	}
 
 	@Test
 	void testGetEmployeesBySalary() {
-		//TODO HW #22
+		List<Employee> listAll = company.getEmployeesBySalary(0,  10000);
+		Employee[] actualAll = listAll.toArray(new Employee[] {});
+		Arrays.sort(actualAll);
+		assertArrayEquals(employees, actualAll);
+		
+		List<Employee> listEmpty = company.getEmployeesBySalary(10000, 20000);
+		assertTrue(listEmpty.isEmpty());
+		
+		List<Employee> list = company.getEmployeesBySalary(6000, 9000);
+		Employee[] actual = list.toArray(new Employee[] {});
+		Employee[] expected = {empl2, empl3};
+		Arrays.sort(actual);
+		assertArrayEquals(expected, actual);
 	}
 
 	@Test
@@ -131,8 +161,10 @@ class CompanyTest {
 		Employee[] actualAll = listAll.toArray(new Employee[] {});
 		Arrays.sort(actualAll);
 		assertArrayEquals(employees, actualAll);
+		
 		List<Employee> listEmpty = company.getEmployeeByAge(90, 100);
 		assertTrue(listEmpty.isEmpty());
+		
 		List<Employee> list2_3 = company.getEmployeeByAge(getAge(DATE3), getAge(DATE1));
 		Employee[] actual2_3 = list2_3.toArray(new Employee[] {});
 		Employee[] expected2_3 = {empl2, empl3};
