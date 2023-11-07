@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import telran.company.dto.DepartmentAvgSalary;
 import telran.company.dto.Employee;
 import telran.company.service.CompanyService;
 import telran.company.service.CompanyServiceImpl;
@@ -29,9 +30,9 @@ class CompanyTest {
 	private static final int SALARY4 = 8000;
 	private static final int SALARY5 = 9000;
 	
-	private static final String DEPARTMENT1 = "QA";
-	private static final String DEPARTMENT2 = "Development";
-	private static final String DEPARTMENT3 = "Management";
+	private static final String DEPARTMENT1 = "dep1";
+	private static final String DEPARTMENT2 = "dep2";
+	private static final String DEPARTMENT3 = "dep3";
 	private static final String DEPARTMENT6 = "Audit";
 	
 	private static final LocalDate DATE1 = LocalDate.of(1970, 10, 23);
@@ -126,17 +127,34 @@ class CompanyTest {
 
 	@Test
 	void testGetEmployeeByAge() {
-		fail("Not yet implemented");
+		List<Employee> listAll = company.getEmployeeByAge(0,  100);
+		Employee[] actualAll = listAll.toArray(new Employee[] {});
+		Arrays.sort(actualAll);
+		assertArrayEquals(employees, actualAll);
+		List<Employee> listEmpty = company.getEmployeeByAge(90, 100);
+		assertTrue(listEmpty.isEmpty());
+		List<Employee> list2_3 = company.getEmployeeByAge(getAge(DATE3), getAge(DATE1));
+		Employee[] actual2_3 = list2_3.toArray(new Employee[] {});
+		Employee[] expected2_3 = {empl2, empl3};
+		Arrays.sort(actual2_3);
+		assertArrayEquals(expected2_3, actual2_3);
 	}
 
 	@Test
 	void testSalaryDistributionByDepartments() {
-		fail("Not yet implemented");
+		DepartmentAvgSalary[] expectedDistribution = {
+				new DepartmentAvgSalary(DEPARTMENT1, (SALARY1 + SALARY2) / 2),
+				new DepartmentAvgSalary(DEPARTMENT2, (SALARY3 + SALARY4) / 2),
+				new DepartmentAvgSalary(DEPARTMENT3, SALARY5)};
+		List<DepartmentAvgSalary> listDistribution = company.salaryDistributionByDepartments();
+		DepartmentAvgSalary[] actualDistribution = listDistribution.toArray(new DepartmentAvgSalary[] {});
+		Arrays.sort(actualDistribution);
+		assertArrayEquals(expectedDistribution, actualDistribution);
 	}
 
 	@Test
 	void testGetSalaryDistribution() {
-		fail("Not yet implemented");
+		
 	}
 
 	@Test
