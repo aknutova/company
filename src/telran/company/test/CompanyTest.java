@@ -8,12 +8,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import telran.company.dto.DepartmentAvgSalary;
 import telran.company.dto.Employee;
+import telran.company.dto.SalaryIntervalDistribution;
 import telran.company.service.CompanyService;
 import telran.company.service.CompanyServiceImpl;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class CompanyTest {
 	
@@ -40,6 +46,8 @@ class CompanyTest {
 	private static final LocalDate DATE3 = LocalDate.of(1980, 5, 3);
 	private static final LocalDate DATE4 = LocalDate.of(1990, 5, 3);
 	private static final LocalDate DATE5 = LocalDate.of(2000, 5, 3);
+	
+	private static final String FILE_PATH = "test.data";
 	
 	Employee empl1 = new Employee(ID1, "name1", SALARY1, DEPARTMENT1, DATE1);
 	Employee empl2 = new Employee(ID2, "name2", SALARY2, DEPARTMENT1, DATE2);	
@@ -106,30 +114,23 @@ class CompanyTest {
 		Employee [] expectedDep2 = {empl3, empl4};
 		List<Employee> list1 = company.getEmployeesByDepartment(DEPARTMENT1);
 		List<Employee> list2 = company.getEmployeesByDepartment(DEPARTMENT2);
-		Employee [] actualDep1 = list1.toArray(new Employee[] {});
-		Employee [] actualDep2 = list2.toArray(new Employee[] {});
-		Arrays.sort(actualDep1);
-		Arrays.sort(actualDep2);
+
 		assertTrue(company.getEmployeesByDepartment(DEPARTMENT6).isEmpty());
-		assertArrayEquals(expectedDep1, actualDep1);
-		assertArrayEquals(expectedDep2, actualDep2);
+		runListTest(expectedDep1, list1);
+		runListTest(expectedDep2, list2);
 	}
 
 	@Test
 	void testGetAllEmployees() {
 		Employee [] expected1 = {empl1, empl2, empl3, empl4, empl5};
 		List<Employee> list1 = company.getAllEmployees();
-		Employee [] actual1 = list1.toArray(new Employee[] {});
-		Arrays.sort(actual1);
-		assertArrayEquals(expected1, actual1);
+		runListTest(expected1, list1);
 		
 		company.fireEmployee(ID1);
 		company.fireEmployee(ID5);
 		Employee [] expected2 = {empl2, empl3, empl4};
 		List<Employee> list2 = company.getAllEmployees();
-		Employee [] actual2 = list2.toArray(new Employee[] {});
-		Arrays.sort(actual2);
-		assertArrayEquals(expected2, actual2);
+		runListTest(expected2, list2);
 		
 		company.fireEmployee(ID2);
 		company.fireEmployee(ID3);
@@ -140,36 +141,16 @@ class CompanyTest {
 
 	@Test
 	void testGetEmployeesBySalary() {
-		List<Employee> listAll = company.getEmployeesBySalary(0,  10000);
-		Employee[] actualAll = listAll.toArray(new Employee[] {});
-		Arrays.sort(actualAll);
-		assertArrayEquals(employees, actualAll);
-		
-		List<Employee> listEmpty = company.getEmployeesBySalary(10000, 20000);
-		assertTrue(listEmpty.isEmpty());
-		
-		List<Employee> list = company.getEmployeesBySalary(6000, 9000);
-		Employee[] actual = list.toArray(new Employee[] {});
-		Employee[] expected = {empl2, empl3};
-		Arrays.sort(actual);
-		assertArrayEquals(expected, actual);
+		runListTest(employees, company.getEmployeesBySalary(0, Integer.MAX_VALUE));
+		runListTest(new Employee[] {}, company.getEmployeesBySalary(10000, Integer.MAX_VALUE));
+		runListTest(new Employee[] {empl2, empl3}, company.getEmployeesBySalary(SALARY2, SALARY4));
 	}
 
 	@Test
 	void testGetEmployeeByAge() {
-		List<Employee> listAll = company.getEmployeeByAge(0,  100);
-		Employee[] actualAll = listAll.toArray(new Employee[] {});
-		Arrays.sort(actualAll);
-		assertArrayEquals(employees, actualAll);
-		
-		List<Employee> listEmpty = company.getEmployeeByAge(90, 100);
-		assertTrue(listEmpty.isEmpty());
-		
-		List<Employee> list2_3 = company.getEmployeeByAge(getAge(DATE3), getAge(DATE1));
-		Employee[] actual2_3 = list2_3.toArray(new Employee[] {});
-		Employee[] expected2_3 = {empl2, empl3};
-		Arrays.sort(actual2_3);
-		assertArrayEquals(expected2_3, actual2_3);
+		runListTest(employees, company.getEmployeeByAge(0, 100));
+		runListTest(new Employee[0], company.getEmployeeByAge(90, 100));
+		runListTest(new Employee[] {empl2, empl3}, company.getEmployeeByAge(getAge(DATE3), getAge(DATE1)));
 	}
 
 	@Test
@@ -186,31 +167,47 @@ class CompanyTest {
 
 	@Test
 	void testGetSalaryDistribution() {
-		
+		int interval = 2000;
+		List<SalaryIntervalDistribution> distribution = company.getSalaryDistribution(interval);
+
 	}
 
 	@Test
 	void testUpdateDepartment() {
-		fail("Not yet implemented");
+		assertEquals(empl2, company.updateDepartment(ID2, DEPARTMENT2));
+		runListTest(new Employee[] {empl1}, company.getEmployeesByDepartment(DEPARTMENT1));
+		runListTest(new Employee[] {empl2, empl3, empl4}, company.getEmployeesByDepartment(DEPARTMENT2));
 	}
 
 	@Test
 	void testUpdateSalary() {
-		fail("Not yet implemented");
+		assertEquals(empl2, company.updateSalary(ID2, SALARY3));
+		runListTest(new Employee[] {empl1}, company.getEmployeesBySalary(SALARY1, SALARY3));
+		runListTest(new Employee[] {empl2, empl3, empl4}, company.getEmployeesBySalary(SALARY3, SALARY5));		
 	}
 
 	@Test
+	@Order(1)
 	void testSave() {
-		fail("Not yet implemented");
+		company.save(FILE_PATH);
 	}
 
 	@Test
+	@Order(2)
 	void testRestore() {
-		fail("Not yet implemented");
+		CompanyService companySaved = new CompanyServiceImpl();
+		companySaved.restore(FILE_PATH);
+		runListTest(employees, companySaved.getAllEmployees());
 	}
 	
 	private int getAge(LocalDate birthDate) {
-		int result = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
+		int result = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());о
 		return result;
+	}
+	
+	private void runListTest(Employee [] expected, List<Employee> list) {
+		Employee[] actual = list.toArray(new Employee[] {});
+		Arrays.sort(actual);
+		assertArrayEquals(expected, actual);
 	}
 }

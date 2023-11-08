@@ -1,12 +1,19 @@
 package telran.company.service;
 
+import java.time.*;
+import java.util.*;
 import java.util.List;
+import java.util.Set;
 
 import telran.company.dto.DepartmentAvgSalary;
 import telran.company.dto.Employee;
 import telran.company.dto.SalaryIntervalDistribution;
 
 public class CompanyServiceImpl implements CompanyService {
+	HashMap<Long, Employee> employeesMap = new HashMap<>();
+	HashMap<String, Set<Employee>> employeesDepartment = new HashMap<>(); // key - department, value = set of employees working in this dept
+	TreeMap<Integer, Set<Employee>> employeesSalary = new TreeMap<>(); // key = salary, value set of employees having that salary value
+	TreeMap<LocalDate, Set<Employee>> employeesAge = new TreeMap<>(); // key = date of birth, value set of employees having that birth date
 
 	@Override
 	/**
@@ -17,7 +24,6 @@ public class CompanyServiceImpl implements CompanyService {
 	 *  
 	 */
 	public Employee hireEmployee(Employee empl) {
-		
 		return null;
 	}
 
@@ -29,7 +35,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * the method must throw IllegalStateException
 	 */
 	public Employee fireEmployee(long id) {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
@@ -40,7 +46,7 @@ public class CompanyServiceImpl implements CompanyService {
 	 * the method returns null 
 	 */
 	public Employee getEmployee(long id) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub O[LogN]
 		return null;
 	}
 
