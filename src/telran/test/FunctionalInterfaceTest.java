@@ -48,6 +48,28 @@ class FunctionalInterfaceTest {
 		});
 		assertArrayEquals(expected, ar);
 	}
+	
+	@Test
+	private int evenOddComp(Integer o1, Integer o2) {
+			int res = 0;
+			if (o1 % 2 == 0 && o2 % 2 != 0) {
+				res = -1;
+			} else if (o1 % 2 != 0 && o2 % 2 == 0) {
+				res = 1;
+			} else if (o1 % 2 == 0 && o2 % 2 == 0) {
+				res = o1 - o2;
+			} else {
+				res = o2 - o1;
+			}
+			return res;
+	}
+	
+	@Test
+	void evenOddSortMethodReference() {
+		Integer[] expected = {-10, 100, 150, 201, 17, 13};
+		Arrays.sort(ar, this::evenOddComp);
+		assertArrayEquals(expected, ar);
+	}
 }
 
 
