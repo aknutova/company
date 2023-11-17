@@ -122,28 +122,14 @@ class CompanyTest {
 
 	@Test
 	void testGetAllEmployees() {
-		Employee [] expected1 = {empl1, empl2, empl3, empl4, empl5};
-		List<Employee> list1 = company.getAllEmployees();
-		runListTest(expected1, list1);
-		
-		company.fireEmployee(ID1);
-		company.fireEmployee(ID5);
-		Employee [] expected2 = {empl2, empl3, empl4};
-		List<Employee> list2 = company.getAllEmployees();
-		runListTest(expected2, list2);
-		
-		company.fireEmployee(ID2);
-		company.fireEmployee(ID3);
-		company.fireEmployee(ID4);
-		List<Employee> list3 = company.getAllEmployees();
-		assertTrue(list3.isEmpty());
+		runListTest(employees, company.getAllEmployees());
 	}
 
 	@Test
 	void testGetEmployeesBySalary() {
 		runListTest(employees, company.getEmployeesBySalary(0, Integer.MAX_VALUE));
-		runListTest(new Employee[] {}, company.getEmployeesBySalary(10000, Integer.MAX_VALUE));
-		runListTest(new Employee[] {empl2, empl3}, company.getEmployeesBySalary(SALARY2, SALARY4));
+		runListTest(new Employee[] {}, company.getEmployeesBySalary(100000, Integer.MAX_VALUE));
+		runListTest(new Employee[] {empl1, empl2}, company.getEmployeesBySalary(SALARY1, SALARY3));
 	}
 
 	@Test
@@ -169,7 +155,12 @@ class CompanyTest {
 	void testGetSalaryDistribution() {
 		int interval = 2000;
 		List<SalaryIntervalDistribution> distribution = company.getSalaryDistribution(interval);
-
+		SalaryIntervalDistribution[] expectedDistribution = {
+				new SalaryIntervalDistribution(SALARY1, SALARY1 + interval, 2),
+				new SalaryIntervalDistribution(SALARY3, SALARY3 + interval, 2),
+				new SalaryIntervalDistribution(SALARY5, SALARY5 + interval, 1)
+		};
+		assertArrayEquals(expectedDistribution, distribution.toArray(new SalaryIntervalDistribution[0]));
 	}
 
 	@Test
@@ -201,7 +192,7 @@ class CompanyTest {
 	}
 	
 	private int getAge(LocalDate birthDate) {
-		int result = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());о
+		int result = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
 		return result;
 	}
 	
