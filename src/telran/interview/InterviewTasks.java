@@ -134,13 +134,13 @@ public class InterviewTasks {
 		//printing
 		
 		int nNumbers = 1_000_000;
-			Random gen = new Random();
-			Map<String, Long> map = gen.ints(nNumbers, 1, Integer.MAX_VALUE)
-					.mapToObj(Integer::toString).flatMapToInt(s -> s.chars())
-					.mapToObj(n -> "" + (char)n)
-					.collect(Collectors.groupingBy(s -> s, Collectors.counting()));
-					map.entrySet().stream()
-					.sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
-					.forEach(e -> System.out.printf("%s - %d\n", e.getKey(), e.getValue()));
+		Random gen = new Random();
+		Map<String, Long> map = gen.ints(nNumbers, 1, Integer.MAX_VALUE)
+				.mapToObj(Integer::toString).flatMapToInt(s -> s.chars())
+				.mapToObj(n -> "" + (char)n)
+				.collect(Collectors.groupingBy(s -> s, Collectors.counting()));
+				map.entrySet().stream()
+				.sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
+				.forEach(e -> System.out.printf("%s - %d\n", e.getKey(), e.getValue()));
 	}
 }
