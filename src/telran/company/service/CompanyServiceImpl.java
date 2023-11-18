@@ -142,7 +142,6 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public List<Employee> getAllEmployees() {
-		
 		return new ArrayList<>(employeesMap.values());
 	}
 
@@ -150,10 +149,10 @@ public class CompanyServiceImpl implements CompanyService {
 	public List<Employee> getEmployeesBySalary(int salaryFrom, int salaryTo) {
 		Collection<Set<Employee>> col = employeesSalary.subMap(salaryFrom, salaryTo).values();
 		ArrayList<Employee> res = new ArrayList<>();
-		for(Set<Employee> set: col) {
+		for (Set<Employee> set : col) 
+		{
 			res.addAll(set);
 		}
-		
 		return res;
 	}
 
@@ -170,7 +169,6 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	private LocalDate getBirthDate(int age) {
-		
 		return LocalDate.now().minusYears(age);
 	}
 
