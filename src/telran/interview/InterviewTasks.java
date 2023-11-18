@@ -99,6 +99,15 @@ public class InterviewTasks {
 		}
 		return res;
 	}
+	
+	private static HashMap<Character, Integer> getStringMap(String string) {
+		HashMap<Character, Integer> res = new HashMap<>();
+		for(char symbol: string.toCharArray()) {
+			res.merge(symbol, 1, Integer::sum);
+		}
+		return res;
+	}
+	
 	private static boolean anagramCheck(String anagram, HashMap<Character, Integer> mapOccurrences) {
 		boolean res = true;
 		char[] symbols = anagram.toCharArray();
