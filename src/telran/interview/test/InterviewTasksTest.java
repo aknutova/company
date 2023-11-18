@@ -10,17 +10,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class InterviewTasksTest {
-	private static final int N_NUMBERS = 100000;
+	private static final int N_NUMBERS = 10000000;
 	int[] bigArray = new int[N_NUMBERS];
 	@Test 
-	@Disabled
+
 	@DisplayName("performance O[N] is Sum2 ")
 	void isSum2PerformanceTest() {
 		//isSum2 complexity O[N]
 		isSum2(bigArray, 1);
 	}
 	@Test 	
-	@Disabled
+
 	@DisplayName("performance O[N^2] is Sum2N2 ")
 	void isSum2N2PerformanceTest() {
 		//isSum2N2 complexity O[N^2]

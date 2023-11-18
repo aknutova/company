@@ -13,7 +13,7 @@ public class InterviewTasks {
 	public static boolean isSum2(int [] ar, int sum) {
 		
 		boolean running = true;
-		HashSet<Integer> setHelper = new HashSet<>();
+		HashSet<Integer> setHelper = new HashSet<>(); // сложность O(n)
 		int i = 0;
 		while(i < ar.length && running) {
 			if(setHelper.contains(sum - ar[i])) {
