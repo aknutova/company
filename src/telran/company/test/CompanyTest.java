@@ -57,8 +57,6 @@ class CompanyTest {
 	
 	Employee[] employees = {empl1, empl2, empl3, empl4, empl5};
 	CompanyService company = null;
-
-	CompanyService company = null;
 	@BeforeEach
 	void setUp() throws Exception {
 		company = new CompanyServiceImpl();
@@ -72,18 +70,10 @@ class CompanyTest {
 		Employee newEmployee = new Employee(ID6, "name6", SALARY1, DEPARTMENT1, DATE1);
 		assertEquals(newEmployee, company.hireEmployee(newEmployee));
 	}
-	
 	@Test
 	void testHireEmployeeException() {
-		Employee newEmployee = empl1;
-		//FIXME 
-		boolean flException = false;
-		try {
-			company.hireEmployee(newEmployee);
-		} catch (IllegalStateException e) {
-			flException = true;
-		}
-		assertTrue(flException);
+		assertThrowsExactly(IllegalStateException.class, () -> company.hireEmployee(empl1));
+		//assertion that method call company.hireEmployee(empl1) should throw IllegalStateException
 	}
 
 	@Test
@@ -91,16 +81,9 @@ class CompanyTest {
 		assertEquals(empl1, company.fireEmployee(ID1));
 		assertEquals(empl1, company.hireEmployee(empl1));
 	}
-	
 	@Test
 	void testFireEmployeeException() {
-		boolean flException = false;
-		try {
-			company.fireEmployee(ID6);
-		} catch (IllegalStateException e) {
-			flException = true;
-		}
-		assertTrue(flException);
+		assertThrowsExactly(IllegalStateException.class, () -> company.fireEmployee(ID6));
 	}
 
 	@Test
@@ -115,10 +98,11 @@ class CompanyTest {
 		Employee [] expectedDep2 = {empl3, empl4};
 		List<Employee> list1 = company.getEmployeesByDepartment(DEPARTMENT1);
 		List<Employee> list2 = company.getEmployeesByDepartment(DEPARTMENT2);
-
+		
 		assertTrue(company.getEmployeesByDepartment(DEPARTMENT6).isEmpty());
 		runListTest(expectedDep1, list1);
 		runListTest(expectedDep2, list2);
+		
 	}
 
 	@Test
@@ -128,9 +112,10 @@ class CompanyTest {
 
 	@Test
 	void testGetEmployeesBySalary() {
-		runListTest(employees, company.getEmployeesBySalary(0, Integer.MAX_VALUE));
-		runListTest(new Employee[] {}, company.getEmployeesBySalary(100000, Integer.MAX_VALUE));
+		runListTest(employees, company.getEmployeesBySalary(0, Integer.MAX_VALUE)); //all employees
+		runListTest(new Employee[] {}, company.getEmployeesBySalary(100000, Integer.MAX_VALUE)); //none employees
 		runListTest(new Employee[] {empl1, empl2}, company.getEmployeesBySalary(SALARY1, SALARY3));
+		
 	}
 
 	@Test
@@ -143,11 +128,13 @@ class CompanyTest {
 	@Test
 	void testSalaryDistributionByDepartments() {
 		DepartmentAvgSalary[] expectedDistribution = {
-				new DepartmentAvgSalary(DEPARTMENT1, (SALARY1 + SALARY2) / 2),
-				new DepartmentAvgSalary(DEPARTMENT2, (SALARY3 + SALARY4) / 2),
-				new DepartmentAvgSalary(DEPARTMENT3, SALARY5)};
+			new DepartmentAvgSalary(DEPARTMENT1, (SALARY1 + SALARY2) / 2),	
+			new DepartmentAvgSalary(DEPARTMENT2, (SALARY3 + SALARY4) / 2),
+			new DepartmentAvgSalary(DEPARTMENT3, SALARY5)
+		};
 		List<DepartmentAvgSalary> listDistribution = company.salaryDistributionByDepartments();
-		DepartmentAvgSalary[] actualDistribution = listDistribution.toArray(new DepartmentAvgSalary[] {});
+		DepartmentAvgSalary[] actualDistribution =
+				listDistribution.toArray(new DepartmentAvgSalary[] {});
 		Arrays.sort(actualDistribution);
 		assertArrayEquals(expectedDistribution, actualDistribution);
 	}
@@ -157,7 +144,7 @@ class CompanyTest {
 		int interval = 1500;
 		List<SalaryIntervalDistribution> distribution = company.getSalaryDistribution(interval);
 		SalaryIntervalDistribution[] expectedDistrubution = {
-			new SalaryIntervalDistribution(4500, 6000, 1),
+			new SalaryIntervalDistribution(4500, 6000, 1)	,
 			new SalaryIntervalDistribution(6000, 7500, 2),
 			new SalaryIntervalDistribution(7500, 9000, 1),
 			new SalaryIntervalDistribution(9000, 10500, 1)
@@ -171,19 +158,23 @@ class CompanyTest {
 		assertEquals(empl2, company.updateDepartment(ID2, DEPARTMENT2));
 		runListTest(new Employee[] {empl1}, company.getEmployeesByDepartment(DEPARTMENT1));
 		runListTest(new Employee[] {empl2, empl3, empl4}, company.getEmployeesByDepartment(DEPARTMENT2));
+		assertThrowsExactly(IllegalStateException.class, () ->
+				company.updateDepartment(ID6, DEPARTMENT1));
 	}
 
 	@Test
 	void testUpdateSalary() {
 		assertEquals(empl2, company.updateSalary(ID2, SALARY3));
 		runListTest(new Employee[] {empl1}, company.getEmployeesBySalary(SALARY1, SALARY3));
-		runListTest(new Employee[] {empl2, empl3, empl4}, company.getEmployeesBySalary(SALARY3, SALARY5));		
+		runListTest(new Employee[] {empl2, empl3, empl4}, company.getEmployeesBySalary(SALARY3, SALARY5));
+		assertThrowsExactly(IllegalStateException.class, () ->
+		company.updateSalary(ID6, SALARY1));
 	}
 
 	@Test
 	@Order(1)
 	void testSave() {
-		company.save(FILE_PATH);
+		company.save(FILE_PATH); //saving company data in the file
 	}
 
 	@Test
@@ -193,15 +184,14 @@ class CompanyTest {
 		companySaved.restore(FILE_PATH);
 		runListTest(employees, companySaved.getAllEmployees());
 	}
-	
-	private int getAge(LocalDate birthDate) {
-		int result = (int) ChronoUnit.YEARS.between(birthDate, LocalDate.now());
+	private int getAge(LocalDate birthdate) {
+		int result = (int) ChronoUnit.YEARS.between(birthdate, LocalDate.now());
 		return result;
 	}
-	
 	private void runListTest(Employee [] expected, List<Employee> list) {
 		Employee[] actual = list.toArray(new Employee[] {});
 		Arrays.sort(actual);
 		assertArrayEquals(expected, actual);
 	}
+
 }
