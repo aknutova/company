@@ -58,10 +58,11 @@ class CompanyTest {
 	Employee[] employees = {empl1, empl2, empl3, empl4, empl5};
 	CompanyService company = null;
 
+	CompanyService company = null;
 	@BeforeEach
 	void setUp() throws Exception {
 		company = new CompanyServiceImpl();
-		for(Employee empl : employees) {
+		for(Employee empl: employees) {
 			company.hireEmployee(empl);
 		}
 	}
