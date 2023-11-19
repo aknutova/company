@@ -1,7 +1,9 @@
 package telran.interview;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -136,11 +138,32 @@ public class InterviewTasks {
 		int nNumbers = 1_000_000;
 		Random gen = new Random();
 		Map<String, Long> map = gen.ints(nNumbers, 1, Integer.MAX_VALUE)
-				.mapToObj(Integer::toString).flatMapToInt(s -> s.chars())
+				//.mapToObj(Integer::toString).flatMapToInt(s -> s.chars()) // (Integer::toString) = (n -> Integer.toString(n))
+				.flatMap(n -> Integer.toString(n).chars())
 				.mapToObj(n -> "" + (char)n)
 				.collect(Collectors.groupingBy(s -> s, Collectors.counting()));
 				map.entrySet().stream()
 				.sorted((e1, e2) -> Long.compare(e2.getValue(), e1.getValue()))
 				.forEach(e -> System.out.printf("%s - %d\n", e.getKey(), e.getValue()));
 	}
+	
+	/**
+	 * prints a given array in random shuffled order
+	 * @param array
+	 * Hint: see solution of sportloto from "java-streams" branch
+	 * void displaySportloto() {
+		Random gen = new Random();
+		gen.ints(1, 50)
+		.distinct().limit(7)
+		.forEach(n -> System.out.print(n + " "));
+	}
+	 */
+	public static void displayArrayShuffling(int []array) {
+		Random gen = new Random();
+		gen.ints(0, array.length)
+		.distinct().limit(array.length)
+		.forEach(n -> System.out.print(array[n] + " "));
+		System.out.println();
+	}
+	
 }
